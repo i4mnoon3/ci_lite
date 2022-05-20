@@ -30,7 +30,7 @@ function form_input($name, $value = '', $attributes = '') {
 function form_password($name, $value, $attributes = '') {
   return "<input type='password' name='$name' value='$value' $attributes>";
 }
-function form_textrea($name, $value, $attributes = '') {
+function form_textarea($name, $value, $attributes = '') {
   return "<textarea name='$name' $attributes>$value</textarea>";
 }
 function form_submit($value, $attributes = '') {
