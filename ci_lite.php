@@ -2,10 +2,10 @@
 
 // config
 $db['default'] = array(
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'test',
+  'hostname' => 'localhost',
+  'username' => 'root',
+  'password' => '',
+  'database' => 'test',
 );
 
 // html_helper
