@@ -97,6 +97,7 @@ class Db {
     );
     $this->con = new mysqli($hostname, $username, $password, $database);
     $this->select = '*';
+    $this->where = null;
   }
   function select($select) {
     $this->select = $select;
@@ -106,14 +107,45 @@ class Db {
     $this->table_name = $table_name;
     return $this;
   }
+  function where($col, $val) {
+    if (!$this->where) {
+      $this->where = array();
+    }
+    $this->where[] = array($col => $val);
+  }
   function get($table_name) {
     $query = '';
-    $query .= 'select ' . $this->select;
+    $query .= 'select ' . $this->select . "\n";
     if ($table_name) {
       $this->table_name = $table_name;
     }
     $query .= ' from ' . $this->table_name;
+    if ($this->where) {
+      $query .= "\n";
+      $query .= 'where ';
+      $w = '';
+      $i = 0;
+      foreach ($this->where as $where) {
+        $key = array_keys($where)[0];
+        $value = $where[$key];
+        if ($i++ > 0) {
+          $w .= '  and ';
+        }
+        $val = '';
+        if (is_string($value)) {
+          $val = "'" . mysqli_real_escape_string($this->con, $value) . "'";
+        } else {
+          $val = mysqli_real_escape_string($this->con, $val);
+        }
+        $w .= $key . ' = ' . $val . "\n";
+      }
+      $query .= $w;
+    }
+    $this->show_profiler($query);
     $this->result = $this->con->query($query);
+    if (!$this->result) {
+      die($this->con->error);
+    }
     return $this;
   }
   function get_where($table_name, $where = null) {
@@ -124,35 +156,51 @@ class Db {
     }
     $query .= ' from ' . $this->table_name;
     if ($where) {
+      $this->where = $where; // TODO:
+      $query .= "\n";
       $query .= ' where ';
       $w = '';
       $i = 0;
-      foreach ($where as $key => $value) {
+      foreach ($this->where as $where) {
+        $key = array_keys($where)[0];
+        $value = $where[$key];
         if ($i++ > 0) {
-          $w .= ', ';
+          $w .= '  and ';
         }
         $val = '';
         if (is_string($value)) {
-          $val .= "'" . $value . "'";
+          $val .= "'" . mysqli_real_escape_string($this->con, $value) . "'";
+        } else {
+          $val = mysqli_real_escape_string($this->con, $val);
         }
         $w .= $key . ' = ' . $val;
       }
       $query .= $w;
     }
+    $this->show_profiler($query);
     $this->result = $this->con->query($query);
+    if (!$this->result) {
+      die($this->con->error);
+    }
     return $this;
+  }
+  function show_profiler($query) {
+    global $enable_profiler;
+    if ($enable_profiler) {
+      print_pre($query);
+    }
   }
   function row() {
     $data = null;
     if ($row = mysqli_fetch_assoc($this->result)) {
-      $data = (object)$row;
+      $data = (object) $row;
     }
     return $data;
   }
   function result() {
     $data = array();
     while ($row = mysqli_fetch_assoc($this->result)) {
-      $data[] = (object)$row;
+      $data[] = (object) $row;
     }
     return $data;
   }
@@ -168,15 +216,19 @@ class Db {
       }
       $col .= $key;
       if (is_string($value)) {
-        $val .= "'$value'";
+        $val .= "'" . mysqli_real_escape_string($this->con, $value) . "'";
       } else {
-        $val .= $value;
+        $val .= mysqli_real_escape_string($this->con, $value);
       }
     }
     $query = '';
-    $query .= 'insert into ' . $table_name . '(' . $col . ')';
+    $query .= 'insert into ' . $table_name . '(' . $col . ')' . "\n";
     $query .= ' values (' . $val . ')';
-    return $this->con->query($query);
+    $this->show_profiler($query);
+    $this->result = $this->con->query($query);
+    if (!$this->result) {
+      die($this->con->error);
+    }
   }
   function update($table_name, $data, $where = null) {
     $this->table_name = $table_name;
@@ -192,10 +244,10 @@ class Db {
       } else {
         $val .= $value;
       }
-      $col .= $key . ' = ' . $val;
+      $col .= $key . ' = ' . $val . "\n";
     }
     $query = '';
-    $query .= 'update ' . $table_name;
+    $query .= 'update ' . $table_name . "\n";
     $query .= ' set ' . $col;
     if ($where) {
       $query .= ' where ';
@@ -203,17 +255,23 @@ class Db {
       $i = 0;
       foreach ($where as $key => $value) {
         if ($i++ > 0) {
-          $w .= ', ';
+          $w .= '  and ';
         }
         $val = '';
         if (is_string($value)) {
-          $val .= "'" . $value . "'";
+          $val .= "'" . mysqli_real_escape_string($this->con, $value) . "'";
+        } else {
+          $val = mysqli_real_escape_string($this->con, $val);
         }
-        $w .= $key . ' = ' . $val;
+        $w .= $key . ' = ' . $val + "\n";
       }
       $query .= $w;
     }
-    return $this->con->query($query);
+    $this->show_profiler($query);
+    $this->result = $this->con->query($query);
+    if (!$this->result) {
+      die($this->con->error);
+    }
   }
   function delete($table_name, $where = null) {
     $this->table_name = $table_name;
@@ -229,13 +287,19 @@ class Db {
         }
         $val = '';
         if (is_string($value)) {
-          $val .= "'" . $value . "'";
+          $val .= "'" . mysqli_real_escape_string($this->con, $value) . "'";
+        } else {
+          $val = mysqli_real_escape_string($this->con, $val);
         }
         $w .= $key . ' = ' . $val;
       }
       $query .= $w;
     }
-    return $this->con->query($query);
+    $this->show_profiler($query);
+    $this->result = $this->con->query($query);
+    if (!$this->result) {
+      die($this->con->error);
+    }
   }
 }
 
