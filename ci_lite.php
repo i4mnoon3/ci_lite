@@ -7,6 +7,7 @@ $db['default'] = array(
   'password' => '',
   'database' => 'test',
 );
+$enable_profiler = false;
 
 // html_helper
 function anchor($url, $text) {
