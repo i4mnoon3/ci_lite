@@ -7,7 +7,6 @@
 
 include_once('ci_lite.php');
 
-
 function user_form() {
   return array(
     'name' => $_POST['name'],
