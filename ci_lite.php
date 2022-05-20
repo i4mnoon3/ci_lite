@@ -36,6 +36,54 @@ function form_textrea($name, $value, $attributes = '') {
 function form_submit($value, $attributes = '') {
   return "<input type='submit' value='$value' $attributes>";
 }
+function form_dropdown($name, $options, $value, $attributes) {
+  $o = '';
+  foreach ($options as $k => $v) {
+    $selected = $k == $value ? 'selected' : '';
+    $o .= "<option value='$k' $selected>$v</option>";
+  }
+  return "<select name='$name' $attributes>$o</select>";
+}
+function post($key) {
+  if (!empty($_POST[$key])) {
+    return $_POST[$key];
+  }
+  return '';
+}
+
+// session_helper
+function session($name, $value = '') {
+  if ($value) {
+    $_SESSION[$name] = $value;
+  }
+  if (isset($_SESSION[$name])) {
+    return $_SESSION[$name];
+  }
+  return null;
+}
+
+// date_helper
+function now($format = 'Y-m-d H:i:s') {
+  $date = new DateTime();
+  return $date->format($format);
+}
+
+// other helper
+function print_pre($a) {
+  echo '<pre>';
+  print_r($a);
+  echo '</pre>';
+}
+function output_enable_profiler($enable) {
+  global $enable_profiler;
+  $enable_profiler = $enable;
+}
+function guid() {
+  if (function_exists('com_create_guid') === true) {
+    return trim(com_create_guid(), '{}');
+  }
+  return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+}
 
 // libraries
 class Db {
