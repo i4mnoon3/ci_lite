@@ -315,7 +315,6 @@ class Db {
     }
   }
 }
-
 // models
 class CI_Model {
   function __construct() {
