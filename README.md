@@ -9,7 +9,7 @@ include_once('ci_lite.php');
 
 function user_form() {
   return array(
-    'name' => $_POST['name'],
+    'username' => $_POST['username'],
   );
 }
 
@@ -42,7 +42,7 @@ $users = $user_model->find_all();
 <h3>Users</h3>
 
 <?php foreach ($users as $user): ?>
-  <li><?php echo $user->id; ?>: <?php echo $user->name; ?>
+  <li><?php echo $user->id; ?>: <?php echo $user->username; ?>
     <?php echo anchor('edit_user.php?id=' . $user->id, 'Edit'); ?>
     <?php echo anchor('delete_user.php?id=' . $user->id, 'Delete'); ?>
   </li>
