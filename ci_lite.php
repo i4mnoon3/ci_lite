@@ -169,7 +169,7 @@ class Db {
     }
     $query .= ' from ' . $this->table_name;
     if ($where) {
-      $this->where = $where; // TODO:
+      $this->where = $where;
       $query .= "\n";
       $query .= ' where ';
       $w = '';
