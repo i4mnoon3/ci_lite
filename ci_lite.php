@@ -6,7 +6,7 @@ $db['default'] = array(
   'username' => 'root',
   'password' => '',
   'database' => 'test',
-);
+); // TODO: Shoudl we need it here or in the one using this?
 $enable_profiler = false;
 
 // html_helper
@@ -17,7 +17,6 @@ function redirect($url) {
   header("Location: $url");
   die();
 }
-
 // form_helper
 function form_open($action, $attributes = '') {
   return "<form method='post' action='$action'>";
@@ -45,13 +44,18 @@ function form_dropdown($name, $options, $value, $attributes) {
   }
   return "<select name='$name' $attributes>$o</select>";
 }
-function post($key) {
+function post($key, $default = '') {
   if (!empty($_POST[$key])) {
     return $_POST[$key];
   }
-  return '';
+  return $default;
 }
-
+function get($key, $default = '') {
+  if (!empty($_GET[$key])) {
+    return $_GET[$key];
+  }
+  return $default;
+}
 // session_helper
 function session($name, $value = '') {
   if ($value) {
@@ -62,7 +66,6 @@ function session($name, $value = '') {
   }
   return null;
 }
-
 // date_helper
 function now($format = 'Y-m-d H:i:s') {
   $date = new DateTime();
@@ -85,7 +88,6 @@ function guid() {
   }
   return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 }
-
 // libraries
 class Db {
   function __construct() {
