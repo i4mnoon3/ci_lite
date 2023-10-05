@@ -92,11 +92,13 @@ function guid() {
 class Db {
   function __construct() {
     global $db;
+    global $active_group;
+    $active_group = $active_group ? $active_group : 'default';
     list($hostname, $username, $password, $database) = array(
-      $db['default']['hostname'],
-      $db['default']['username'],
-      $db['default']['password'],
-      $db['default']['database'],
+      $db[$active_group]['hostname'],
+      $db[$active_group]['username'],
+      $db[$active_group]['password'],
+      $db[$active_group]['database'],
     );
     $this->con = new mysqli($hostname, $username, $password, $database);
     $this->select = '*';
