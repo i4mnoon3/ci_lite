@@ -71,9 +71,9 @@ function now($format = 'Y-m-d H:i:s') {
   $date = new DateTime();
   return $date->format($format);
 }
-
 // other helper
-function print_pre($a) {
+function print_pre($a, $pre_text = '') {
+  echo $pre_text;
   echo '<pre>';
   print_r($a);
   echo '</pre>';
