@@ -276,7 +276,7 @@ class Db {
         } else {
           $val = mysqli_real_escape_string($this->con, $val);
         }
-        $w .= $key . ' = ' . $val + "\n";
+        $w .= $key . ' = ' . $val . "\n";
       }
       $query .= $w;
     }
