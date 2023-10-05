@@ -153,6 +153,14 @@ class Db {
     }
     return $this;
   }
+  function query($query) {
+    $this->show_profiler($query);
+    $this->result = $this->con->query($query);
+    if (!$this->result) {
+      die($this->con->error);
+    }
+    return $this;
+  }
   function get_where($table_name, $where = null) {
     $query = '';
     $query .= 'select ' . $this->select;
