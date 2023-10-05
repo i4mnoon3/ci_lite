@@ -174,9 +174,7 @@ class Db {
       $query .= ' where ';
       $w = '';
       $i = 0;
-      foreach ($this->where as $where) {
-        $key = array_keys($where)[0];
-        $value = $where[$key];
+      foreach ($this->where as $key => $value) {
         if ($i++ > 0) {
           $w .= '  and ';
         }
