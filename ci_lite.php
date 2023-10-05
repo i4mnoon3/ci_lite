@@ -182,7 +182,7 @@ class Db {
         if (is_string($value)) {
           $val .= "'" . mysqli_real_escape_string($this->con, $value) . "'";
         } else {
-          $val = mysqli_real_escape_string($this->con, $val);
+          $val = mysqli_real_escape_string($this->con, $value);
         }
         $w .= $key . ' = ' . $val;
       }
